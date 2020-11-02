@@ -1,0 +1,17 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div>
+        <h3>All Posts</h3>
+        <form id='new-post' class='card-body'>
+            <div class="form-group">
+                New Post
+                <input id='new-post' class='form-control'>
+            </div>
+            <input onclick='new_post()' type="submit" class="btn btn-primary">
+        </form>
+    </div>
+    <div class='card-body'>
+
+    </div>
+{% endblock %}
