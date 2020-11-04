@@ -1,13 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Post
 
 
 def index(request):
+
     return render(request, "network/index.html")
 
 
@@ -61,3 +62,23 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def posts(request):
+    posts = Post.objects.filter(user=request.user)
+
+    posts = posts.order_by("-timestamp").all()
+    return JsonResponse([post.serialize() for post in posts], safe=False)
+
+def create_post(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+    
+    data = json.loads(request.body)
+    print(data)
+    '''
+    new_post = request.POST["new-post"]
+    user = request.POST["user"]
+    user = User.objects.get(username=user)
+    post = Post(user = user, text = new_post)
+    post.save()
+    '''

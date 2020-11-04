@@ -1,14 +1,17 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
     <div>
         <h3>All Posts</h3>
-        <form id='new-post' class='card-body'>
+        <form id='new-post' class='card-body' method="post">
+            {% csrf_token %}
             <div class="form-group">
                 New Post
-                <input id='new-post' class='form-control'>
+                <input id='post-text' name='new-post' class='form-control'>
             </div>
-            <input onclick='new_post()' type="submit" class="btn btn-primary">
+            <input onclick='create_post()' id='post' type="submit" class="btn btn-primary">
+            <input name='user' type="hidden" value="{{ user.username }}">
         </form>
     </div>
     <div class='card-body'>
