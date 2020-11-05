@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt,csrf_protect
 
 from .models import User, Post
 
@@ -69,8 +70,9 @@ def posts(request):
     posts = posts.order_by("-timestamp").all()
     return JsonResponse([post.serialize() for post in posts], safe=False)
 
+@csrf_exempt
 def create_post(request):
-    
+    print('111111'*40)
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
     print(request)

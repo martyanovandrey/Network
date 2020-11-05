@@ -18,10 +18,8 @@ function create_post() {
     console.log('reretrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
 	fetch('/create_post', {
 			method: 'POST',
-			credentials: "same-origin",
 			body: JSON.stringify({
-				csrfmiddlewaretoken: '{{ csrf_token }}',
-				post: document.querySelector('#post-text').value
+				post: document.querySelector('#new-post').value
 			})
 		})
 		.then(response => response.json())
