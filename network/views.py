@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -70,7 +71,7 @@ def posts(request):
     posts = posts.order_by("-timestamp").all()
     return JsonResponse([post.serialize() for post in posts], safe=False)
 
-@csrf_exempt
+
 def create_post(request):
     print('111111'*40)
     if request.method != "POST":
@@ -78,10 +79,13 @@ def create_post(request):
     print(request)
     data = json.loads(request.body)
     print(data)
-    '''
+    return HttpResponse(status=204)
+
+
+'''
     new_post = request.POST["new-post"]
     user = request.POST["user"]
     user = User.objects.get(username=user)
     post = Post(user = user, text = new_post)
     post.save()
-    '''
+'''

@@ -14,12 +14,34 @@ function load_post() {
 		});
 }
 
+function getCookie(name) {
+	if (!document.cookie) {
+	return null;
+	}
+	const token = document.cookie.split(';')
+	.map(c => c.trim())
+	.filter(c => c.startsWith(name + '='));
+
+	if (token.length === 0) {
+	return null;
+	}
+	return decodeURIComponent(token[0].split('=')[1]);
+}
+
 function create_post() {
     console.log('reretrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
 	fetch('/create_post', {
+			credentials: 'include',
 			method: 'POST',
+			mode: 'same-origin',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'X-CSRFToken': getCookie('csrftoken') 
+			},
 			body: JSON.stringify({
-				post: document.querySelector('#new-post').value
+				post: document.querySelector('#post-text').value,
+				user: `${ user.username }`
 			})
 		})
 		.then(response => response.json())
@@ -28,3 +50,4 @@ function create_post() {
 			console.log(result);
         });
 }
+
