@@ -6,20 +6,21 @@
 
 function load_post() {
     console.log('rwerwrwere1111111111111111111111')
-/* 	fetch(`/posts`)
+	fetch(`/posts`)
 		.then(response => response.json())
 		.then(posts => {
 			// Print emails
 			console.log(posts);
-		}); */
+		});
 }
 
 function create_post() {
     console.log('reretrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
-    /*
-	fetch('/emails', {
+	fetch('/create_post', {
 			method: 'POST',
+			credentials: "same-origin",
 			body: JSON.stringify({
+				csrfmiddlewaretoken: '{{ csrf_token }}',
 				post: document.querySelector('#post-text').value
 			})
 		})
@@ -28,5 +29,4 @@ function create_post() {
 			// Print result
 			console.log(result);
         });
- */
 }

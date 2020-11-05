@@ -10,11 +10,15 @@
                 New Post
                 <input id='post-text' name='new-post' class='form-control'>
             </div>
-            <input onclick='create_post()' id='post' type="submit" class="btn btn-primary">
             <input name='user' type="hidden" value="{{ user.username }}">
+            <input onclick='create_post()' id='post' type="submit" class="btn btn-primary">
         </form>
     </div>
     <div class='card-body'>
 
     </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}

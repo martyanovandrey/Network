@@ -70,9 +70,10 @@ def posts(request):
     return JsonResponse([post.serialize() for post in posts], safe=False)
 
 def create_post(request):
+    
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
-    
+    print(request)
     data = json.loads(request.body)
     print(data)
     '''
