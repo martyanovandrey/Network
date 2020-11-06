@@ -29,7 +29,6 @@ function getCookie(name) {
 }
 
 function create_post() {
-    console.log('reretrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
 	fetch('/create_post', {
 			credentials: 'include',
 			method: 'POST',
@@ -41,8 +40,8 @@ function create_post() {
 			},
 			body: JSON.stringify({
 				post: document.querySelector('#post-text').value,
-				user: `${ user.username }`
-			})
+				username: JSON.parse(document.getElementById('username').textContent)
+				})
 		})
 		.then(response => response.json())
 		.then(result => {

@@ -73,19 +73,15 @@ def posts(request):
 
 
 def create_post(request):
-    print('111111'*40)
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
-    print(request)
     data = json.loads(request.body)
-    print(data)
-    return HttpResponse(status=204)
-
-
-'''
-    new_post = request.POST["new-post"]
-    user = request.POST["user"]
+    new_post = data["post"]
+    user = data["username"]
     user = User.objects.get(username=user)
     post = Post(user = user, text = new_post)
     post.save()
-'''
+    return HttpResponse(status=204)
+
+
+
