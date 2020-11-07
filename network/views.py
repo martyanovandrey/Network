@@ -67,7 +67,6 @@ def register(request):
 
 def posts(request):
     posts = Post.objects.filter(user=request.user)
-
     posts = posts.order_by("-timestamp").all()
     return JsonResponse([post.serialize() for post in posts], safe=False)
 
@@ -83,6 +82,8 @@ def create_post(request):
     post.save()
     return HttpResponse(status=204)
 
-def profile(request):
-    return HttpResponseRedirect('profile')
-
+def profile(request, profile):
+    posts = Post.objects.filter(user=request.user)
+    posts = posts.order_by("-timestamp").all()
+    posts = JsonResponse([post.serialize() for post in posts], safe=False)
+    return render(request, 'network/profile.html', {'name': profile})
