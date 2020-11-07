@@ -1,18 +1,46 @@
-/* document.addEventListener('DOMContentLoaded', function () {
-
-	// Use buttons to toggle between views
-    document.querySelector('#post').addEventListener('click', () => load_post());
-}) */
+document.addEventListener('DOMContentLoaded', load_post())
 
 function load_post() {
-    console.log('rwerwrwere1111111111111111111111')
 	fetch(`/posts`)
 		.then(response => response.json())
 		.then(posts => {
 			// Print emails
 			console.log(posts);
+			posts.forEach(add_posts);
 		});
 }
+
+function add_posts(object) {
+	const post = document.createElement('div');
+	post.id = 'post'
+	// Create data-id with mail id
+	post.dataset.postid = object.id
+	post.classList.add('card-body')
+	post.classList.add('post')
+	/* Another way to add listen function
+
+	const element = document.createElement('div');
+	element.innerHTML = 'This is the content of the div.';
+	element.addEventListener('click', function() {
+		console.log('This element has been clicked!')
+	});
+	document.querySelector('#emails-view').append(element);
+	*/
+
+	post.innerHTML = `
+		<h5>${object.user}</h5> 
+		<a>Edit</a>
+		<span>${object.text}</span>
+		<span style='color:#b2b2b2'>${object.timestamp}</span>
+		<span>❤️ ${object.likes}</span>
+		<a style='color:#c6c6c6'>Comment</a>
+		`
+	document.querySelector('#posts-view').append(post)
+
+
+};
+
+
 
 function getCookie(name) {
 	if (!document.cookie) {
