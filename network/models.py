@@ -8,7 +8,7 @@ class User(AbstractUser):
 class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user")
     text = models.CharField(max_length=255)
-    likes = models.IntegerField(null=True)
+    likes = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -18,5 +18,7 @@ class Post(models.Model):
         return {
             "id": self.id,
             "user": self.user.username,
-            'text': self.text
+            'text': self.text,
+            'likes': self.likes,
+            'timestamp': self.timestamp.strftime("%b %#d %Y, %#I:%M %p")
         }

@@ -83,5 +83,6 @@ def create_post(request):
     post.save()
     return HttpResponse(status=204)
 
-
+def profile(request):
+    return HttpResponseRedirect('profile')
 
