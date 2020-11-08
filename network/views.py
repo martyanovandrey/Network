@@ -6,8 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 
-from .models import User, Post
-
+from .models import User, Post, UserFollowing
 
 def index(request):
 
@@ -83,7 +82,25 @@ def create_post(request):
     return HttpResponse(status=204)
 
 def profile(request, profile):
-    posts = Post.objects.filter(user=request.user)
-    posts = posts.order_by("-timestamp").all()
-    posts = JsonResponse([post.serialize() for post in posts], safe=False)
-    return render(request, 'network/profile.html', {'name': profile})
+    user = User.objects.get(id=request.user.id)
+    follow = User.objects.get(username=profile)
+    try:
+        UserFollowing.objects.get(user_id=user, following_user_id=follow).delete()
+        is_followed = False
+    except:
+        UserFollowing.objects.create(user_id=user, following_user_id=follow)
+        is_followed = True
+    
+    following = user.following.count()
+    followers = user.followers.count()
+    return render(request, 'network/profile.html', {
+        'name': profile,
+        'following': following,
+        'followers': followers,
+        'is_followed': is_followed        
+        })
+
+def follow(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+

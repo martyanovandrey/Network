@@ -22,3 +22,10 @@ class Post(models.Model):
             'likes': self.likes,
             'timestamp': self.timestamp.strftime("%b %#d %Y, %#I:%M %p")
         }
+
+class UserFollowing(models.Model):
+    user_id = models.ForeignKey("User", on_delete=models.CASCADE, related_name="following")
+    following_user_id = models.ForeignKey("User", on_delete=models.CASCADE, related_name="followers")
+
+    class Meta:
+        unique_together = ['user_id', 'following_user_id']
