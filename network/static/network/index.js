@@ -78,3 +78,11 @@ function create_post() {
         });
 }
 
+function follow() {
+	fetch(`/profile/${this.dataset.mailid}/follow`, {
+		method: 'PUT',
+		body: JSON.stringify({
+			read: true
+		})
+	})
+}
