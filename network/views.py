@@ -64,8 +64,14 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-def posts(request):
-    posts = Post.objects.filter(user=request.user)
+def posts(request, postbox):
+    if postbox == 'all':
+        posts = Post.objects.all()
+        print(posts)
+    else:
+        user = User.objects.get(username=postbox)
+        posts = Post.objects.filter(user=user)
+        print(posts)
     posts = posts.order_by("-timestamp").all()
     return JsonResponse([post.serialize() for post in posts], safe=False)
 
@@ -84,15 +90,17 @@ def create_post(request):
 def profile(request, profile):
     user = User.objects.get(id=request.user.id)
     follow = User.objects.get(username=profile)
+    
     try:
-        UserFollowing.objects.get(user_id=user, following_user_id=follow).delete()
         is_followed = False
+        if request.method == "POST":
+            UserFollowing.objects.get(user_id=user, following_user_id=follow).delete()
     except:
         UserFollowing.objects.create(user_id=user, following_user_id=follow)
         is_followed = True
     
-    following = user.following.count()
-    followers = user.followers.count()
+    following = follow.following.count()
+    followers = follow.followers.count()
     return render(request, 'network/profile.html', {
         'name': profile,
         'following': following,
@@ -101,6 +109,10 @@ def profile(request, profile):
         })
 
 def follow(request):
-    if request.method != "POST":
-        return JsonResponse({"error": "POST request required."}, status=400)
+    return HttpResponse(status=204)
+
+def user_api(request):
+    user = User.objects.get(id=request.user.id)
+    user_following = UserFollowing.objects.filter(user_id=user)
+    return JsonResponse([user_follow.serialize() for user_follow in user_following], safe=False)
 
