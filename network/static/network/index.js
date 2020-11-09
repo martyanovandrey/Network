@@ -1,11 +1,14 @@
-document.addEventListener('DOMContentLoaded', load_post())
+document.addEventListener('DOMContentLoaded', function () {
+	document.querySelector('#all-posts').addEventListener('click', () => load_post('all'));
+	document.querySelector('#user-posts').addEventListener('click', () => load_post(document.querySelector('#user-posts').innerHTML));
+});
 
-function load_post() {
-	fetch(`/posts`)
+function load_post(postbox) {
+	console.log(postbox)
+	fetch(`/posts/${postbox}`)
 		.then(response => response.json())
 		.then(posts => {
 			// Print emails
-			console.log(posts);
 			posts.forEach(add_posts);
 		});
 }
@@ -28,7 +31,7 @@ function add_posts(object) {
 	*/
 
 	post.innerHTML = `
-		<h5>${object.user}</h5> 
+		<h5><a href="/profile/${object.user}">${object.user}</a></h5> 
 		<a>Edit</a>
 		<span>${object.text}</span>
 		<span style='color:#b2b2b2'>${object.timestamp}</span>
@@ -79,7 +82,7 @@ function create_post() {
 }
 
 function follow() {
-	fetch(`/profile/${this.dataset.mailid}/follow`, {
+	fetch(`/profile/${this.dataset.mailid}`, {
 		method: 'PUT',
 		body: JSON.stringify({
 			read: true

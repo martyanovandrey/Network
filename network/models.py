@@ -3,12 +3,19 @@ from django.db import models
 
 
 class User(AbstractUser):
+    def serialize(self):
+        return {
+            'id': self.id,
+            "username": self.username
+        }
+
     pass
+
 
 class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user")
     text = models.CharField(max_length=255)
-    likes = models.IntegerField()
+    likes = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -26,6 +33,12 @@ class Post(models.Model):
 class UserFollowing(models.Model):
     user_id = models.ForeignKey("User", on_delete=models.CASCADE, related_name="following")
     following_user_id = models.ForeignKey("User", on_delete=models.CASCADE, related_name="followers")
+
+    def serialize(self):
+        return {
+            'user_id': self.user_id.username,
+            "following_user_id": self.following_user_id.username
+        }
 
     class Meta:
         unique_together = ['user_id', 'following_user_id']
