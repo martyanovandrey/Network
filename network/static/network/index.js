@@ -1,10 +1,11 @@
-document.addEventListener('DOMContentLoaded', function () {
-	document.querySelector('#all-posts').addEventListener('click', () => load_post('all'));
-	document.querySelector('#user-posts').addEventListener('click', () => load_post(document.querySelector('#user-posts').innerHTML));
-});
+document.addEventListener('DOMContentLoaded', () =>
+	load_post(window.location.pathname.split('/').pop()));
+
 
 function load_post(postbox) {
-	console.log(postbox)
+	if (postbox == '') {
+		postbox = 'all'
+	}
 	fetch(`/posts/${postbox}`)
 		.then(response => response.json())
 		.then(posts => {
@@ -39,8 +40,6 @@ function add_posts(object) {
 		<a style='color:#c6c6c6'>Comment</a>
 		`
 	document.querySelector('#posts-view').append(post)
-
-
 };
 
 

@@ -65,13 +65,11 @@ def register(request):
         return render(request, "network/register.html")
 
 def posts(request, postbox):
-    if postbox == 'all':
-        posts = Post.objects.all()
-        print(posts)
-    else:
+    if User.objects.filter(username=postbox).exists():
         user = User.objects.get(username=postbox)
         posts = Post.objects.filter(user=user)
-        print(posts)
+    else:
+        posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
     return JsonResponse([post.serialize() for post in posts], safe=False)
 
