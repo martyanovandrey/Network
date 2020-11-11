@@ -21,6 +21,10 @@
     </div>
 {% endblock %}
 
+{% block content %}
+  {% include "network/pagination.html" with page=posts %} 
+{% endblock %}
+
 {% block script %}
     <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}

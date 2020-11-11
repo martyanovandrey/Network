@@ -6,9 +6,12 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger  
+
 
 from .models import User, Post, UserFollowing
+
+from django.views.generic import ListView
 
 def index(request):
 
@@ -73,26 +76,20 @@ def posts(request, postbox):
     else:
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
-    posts = Paginator(posts, 10)
-    '''
-    https://docs.djangoproject.com/en/3.0/topics/pagination/
-    Need to check this part
-    ///////////////////////////////////////////////
-    from django.views.generic import ListView
+    paginator = Paginator(posts, 10)
+    page = request.GET.get('page')  
+    try:  
+        posts = paginator.page(page)  
+    except PageNotAnInteger:  
+        # Если страница не является целым числом, поставим первую страницу  
+        posts = paginator.page(1)  
+    except EmptyPage:  
+        # Если страница больше максимальной, доставить последнюю страницу результатов  
+        posts = paginator.page(paginator.num_pages)  
+    return render(request, 'network/index.html',  
+		    {'page': page,  
+		   'posts': posts})
 
-    from myapp.models import Contact
-
-    class ContactList(ListView):
-        paginate_by = 2
-        model = Contact
-
-
-    And this part
-    ///////////////////////////////////////////////
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'list.html', {'page_obj': page_obj})
-    '''
 
 def create_post(request):
     if request.method != "POST":
