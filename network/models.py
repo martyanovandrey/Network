@@ -42,3 +42,5 @@ class UserFollowing(models.Model):
 
     class Meta:
         unique_together = ['user_id', 'following_user_id']
+
+        
