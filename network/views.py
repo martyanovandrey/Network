@@ -1,10 +1,12 @@
 import json
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
+from django.core.paginator import Paginator
 
 from .models import User, Post, UserFollowing
 
@@ -71,8 +73,26 @@ def posts(request, postbox):
     else:
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
-    return JsonResponse([post.serialize() for post in posts], safe=False)
+    posts = Paginator(posts, 10)
+    '''
+    https://docs.djangoproject.com/en/3.0/topics/pagination/
+    Need to check this part
+    ///////////////////////////////////////////////
+    from django.views.generic import ListView
 
+    from myapp.models import Contact
+
+    class ContactList(ListView):
+        paginate_by = 2
+        model = Contact
+
+
+    And this part
+    ///////////////////////////////////////////////
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'list.html', {'page_obj': page_obj})
+    '''
 
 def create_post(request):
     if request.method != "POST":
@@ -85,6 +105,7 @@ def create_post(request):
     post.save()
     return HttpResponse(status=204)
 
+@login_required(login_url='login')
 def profile(request, profile):
     user = User.objects.get(id=request.user.id)
     follow = User.objects.get(username=profile)
