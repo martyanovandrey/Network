@@ -76,19 +76,22 @@ def posts(request, postbox):
     else:
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
+    return JsonResponse([post.serialize() for post in posts], safe=False)
+    '''
     paginator = Paginator(posts, 10)
     page = request.GET.get('page')  
     try:  
-        posts = paginator.page(page)  
+        posts_pag = paginator.page(page)  
     except PageNotAnInteger:  
         # Если страница не является целым числом, поставим первую страницу  
-        posts = paginator.page(1)  
+        posts_pag = paginator.page(1)  
     except EmptyPage:  
         # Если страница больше максимальной, доставить последнюю страницу результатов  
-        posts = paginator.page(paginator.num_pages)  
+        posts_pag = paginator.page(paginator.num_pages)  
     return render(request, 'network/index.html',  
 		    {'page': page,  
-		   'posts': posts})
+		   'posposts_pagts': posts_pag})
+           '''
 
 
 def create_post(request):
