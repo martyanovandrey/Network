@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
-	document.querySelector('#edit').addEventListener('click', () => edit())
+	document.querySelectorAll(".edit").forEach(e =>
+		e.addEventListener("click", function () {
+			edit(e.parentNode.id)
+		}))
 });
-
 
 function load_post(postbox) {
 	if (postbox == '') {
@@ -18,20 +20,9 @@ function load_post(postbox) {
 function add_posts(object) {
 	const post = document.createElement('div');
 	post.id = 'post'
-	// Create data-id with mail id
 	post.dataset.postid = object.id
 	post.classList.add('card-body')
 	post.classList.add('post')
-	/* Another way to add listen function
-
-	const element = document.createElement('div');
-	element.innerHTML = 'This is the content of the div.';
-	element.addEventListener('click', function() {
-		console.log('This element has been clicked!')
-	});
-	document.querySelector('#emails-view').append(element);
-	*/
-
 	post.innerHTML = `
 		<h5><a href="/profile/${object.user}">${object.user}</a></h5> 
 		<a>Edit</a>
@@ -43,18 +34,16 @@ function add_posts(object) {
 	document.querySelector('#posts-view').append(post)
 };
 
-
-
 function getCookie(name) {
 	if (!document.cookie) {
-	return null;
+		return null;
 	}
 	const token = document.cookie.split(';')
-	.map(c => c.trim())
-	.filter(c => c.startsWith(name + '='));
+		.map(c => c.trim())
+		.filter(c => c.startsWith(name + '='));
 
 	if (token.length === 0) {
-	return null;
+		return null;
 	}
 	return decodeURIComponent(token[0].split('=')[1]);
 }
@@ -67,18 +56,17 @@ function create_post() {
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCookie('csrftoken') 
+				'X-CSRFToken': getCookie('csrftoken')
 			},
 			body: JSON.stringify({
 				post: document.querySelector('#post-text').value,
 				username: JSON.parse(document.getElementById('username').textContent)
-				})
+			})
 		})
 		.then(response => response.json())
 		.then(result => {
-			// Print result
 			console.log(result);
-        });
+		});
 }
 
 function follow() {
@@ -90,38 +78,43 @@ function follow() {
 	})
 }
 
-function edit() {
-
-	var post = document.getElementById("edit_text");
-	edit_post = document.createElement('textarea')
-	edit_post.setAttribute("id", 'edit_text')
+function edit(id) {
+	console.log(id)
+	var post_id = document.getElementById(id)
+	console.log(post_id)
+	var post = post_id.querySelector("#edit_text");
+	console.log(post)
+	edit_post = post_id.querySelector('#new_text');
+	console.log(edit_post)
+	edit_post.style.display = 'block';
+	post.style.display = 'none';
 	edit_post.innerHTML = post.innerHTML
-	post.parentNode.replaceChild(edit_post, post);
 
-	var save_button = document.getElementById('save_btn')
-	save_button.setAttribute("type", "submit");
-	save_button.innerHTML = 'Save'
-	save_button.onclick = 	function() {fetch('/create_post', {
-		credentials: 'include',
-		method: 'PUT',
-		mode: 'same-origin',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-			'X-CSRFToken': getCookie('csrftoken') 
-		},
-		body: JSON.stringify({
-			id: document.querySelector('#edit_text').parentNode.id,
-			post: document.querySelector('#edit_text').value,
-			username: JSON.parse(document.getElementById('username').textContent)
+	var save_button = post_id.querySelector('#save_btn')
+	save_button.style.display = 'block';
+	save_button.onclick = function () {
+		fetch('/create_post', {
+				credentials: 'include',
+				method: 'PUT',
+				mode: 'same-origin',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'X-CSRFToken': getCookie('csrftoken')
+				},
+				body: JSON.stringify({
+					id: edit_post.parentNode.id,
+					post: edit_post.value,
+					username: JSON.parse(document.getElementById('username').textContent)
+				})
 			})
-	})
-	.then(response => response.json())
-	.then(result => {
-		// Print result
-		console.log(result);
-	});}
+			.then(response => response.json())
+			.then(result => {
 
-
-	
-}
+			});
+		edit_post.style.display = 'none';
+		save_button.style.display = 'none';
+		post.innerHTML = edit_post.value
+		post.style.display = 'block';
+	}
+};
