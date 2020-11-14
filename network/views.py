@@ -99,6 +99,7 @@ def create_post(request):
         return HttpResponse(status=204)
     elif request.method == "PUT":
         data = json.loads(request.body)
+        print(data)
         new_post = data["post"]
         user = data["username"]
         id = data["id"]
