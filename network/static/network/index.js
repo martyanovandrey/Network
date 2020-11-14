@@ -1,5 +1,6 @@
-document.addEventListener('DOMContentLoaded', () =>
-	load_post(window.location.pathname.split('/').pop()));
+document.addEventListener('DOMContentLoaded', function () {
+	document.querySelector('#edit').addEventListener('click', () => edit())
+});
 
 
 function load_post(postbox) {
@@ -87,4 +88,40 @@ function follow() {
 			read: true
 		})
 	})
+}
+
+function edit() {
+
+	var post = document.getElementById("edit_text");
+	edit_post = document.createElement('textarea')
+	edit_post.setAttribute("id", 'edit_text')
+	edit_post.innerHTML = post.innerHTML
+	post.parentNode.replaceChild(edit_post, post);
+
+	var save_button = document.getElementById('save_btn')
+	save_button.setAttribute("type", "submit");
+	save_button.innerHTML = 'Save'
+	save_button.onclick = 	function() {fetch('/create_post', {
+		credentials: 'include',
+		method: 'PUT',
+		mode: 'same-origin',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'X-CSRFToken': getCookie('csrftoken') 
+		},
+		body: JSON.stringify({
+			id: document.querySelector('#edit_text').parentNode.id,
+			post: document.querySelector('#edit_text').value,
+			username: JSON.parse(document.getElementById('username').textContent)
+			})
+	})
+	.then(response => response.json())
+	.then(result => {
+		// Print result
+		console.log(result);
+	});}
+
+
+	
 }

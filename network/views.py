@@ -75,35 +75,39 @@ def posts(request, postbox):
         posts = Post.objects.filter(user=user)
     else:
         posts = Post.objects.all()
-    posts = posts.order_by("-timestamp").all()
-    return JsonResponse([post.serialize() for post in posts], safe=False)
-    '''
-    paginator = Paginator(posts, 10)
-    page = request.GET.get('page')  
-    try:  
-        posts_pag = paginator.page(page)  
-    except PageNotAnInteger:  
-        # Если страница не является целым числом, поставим первую страницу  
-        posts_pag = paginator.page(1)  
-    except EmptyPage:  
-        # Если страница больше максимальной, доставить последнюю страницу результатов  
-        posts_pag = paginator.page(paginator.num_pages)  
-    return render(request, 'network/index.html',  
-		    {'page': page,  
-		   'posposts_pagts': posts_pag})
-           '''
+    posts = posts.order_by("-timestamp")
+    page = request.GET.get('page', 1)
+    paginator = Paginator(posts, 2)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    return render(request, 'network/index.html', { 'posts': posts })
 
 
 def create_post(request):
-    if request.method != "POST":
-        return JsonResponse({"error": "POST request required."}, status=400)
-    data = json.loads(request.body)
-    new_post = data["post"]
-    user = data["username"]
-    user = User.objects.get(username=user)
-    post = Post(user = user, text = new_post)
-    post.save()
-    return HttpResponse(status=204)
+    if request.method == "POST":
+        data = json.loads(request.body)
+        new_post = data["post"]
+        user = data["username"]
+        user = User.objects.get(username=user)
+        post = Post(user = user, text = new_post)
+        post.save()
+        return HttpResponse(status=204)
+    elif request.method == "PUT":
+        data = json.loads(request.body)
+        new_post = data["post"]
+        user = data["username"]
+        id = data["id"]
+        user = User.objects.get(username=user)
+        post = Post.objects.filter(id = id).update(text = new_post)
+        return HttpResponse(status=204)
+    else:
+        return JsonResponse({"error": "POST/PUT request required."}, status=400)
+
 
 @login_required(login_url='login')
 def profile(request, profile):
