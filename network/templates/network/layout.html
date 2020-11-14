@@ -18,11 +18,11 @@
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" id='user-posts' href='/profile/{{ user.username }}'>{{ user.username }}</a>
+                        <a class="nav-link" id='user-posts' href="{% url 'posts' postbox=user.username %}">{{ user.username }}</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                  <a class="nav-link" id='all-posts' href="{% url 'index' %}">All Posts</a>
+                  <a class="nav-link" id='all-posts' href="{% url 'posts' postbox='all' %}">All Posts</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
