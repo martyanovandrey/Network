@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger  
-
+from django.db.models import Q
 
 from .models import User, Post, UserFollowing
 
@@ -69,10 +69,13 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-def posts(request, postbox):
-    if User.objects.filter(username=postbox).exists():
-        user = User.objects.get(username=postbox)
+#This function get request and username and return Page object with username's posts divided by pages 
+def post_paginator(request, username):
+    if User.objects.filter(username=username).exists():
+        user = User.objects.get(username=username)
         posts = Post.objects.filter(user=user)
+    #elif isinstance(username, list):
+
     else:
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp")
@@ -83,9 +86,14 @@ def posts(request, postbox):
     except PageNotAnInteger:
         posts = paginator.page(1)
     except EmptyPage:
-        posts = paginator.page(paginator.num_pages)
+        posts = paginator.page(paginator.num_pages)    
+    return posts
 
+
+def posts(request, postbox):
+    posts = post_paginator(request, postbox)
     return render(request, 'network/index.html', { 'posts': posts })
+
 
 
 def create_post(request):
@@ -125,15 +133,29 @@ def profile(request, profile):
     
     following = follow.following.count()
     followers = follow.followers.count()
+
+
+    posts = post_paginator(request, profile)
     return render(request, 'network/profile.html', {
         'name': profile,
         'following': following,
         'followers': followers,
-        'is_followed': is_followed        
+        'is_followed': is_followed,
+        'posts': posts        
         })
 
 def follow(request):
-    return HttpResponse(status=204)
+    follow_list = UserFollowing.objects.filter(user_id=user)
+    test = list()
+    for follow in follow_list:
+        test.append(follow.following_user_id)
+    my_filter_qs = Q()
+    for user in test:
+        my_filter_qs = my_filter_qs | Q(user=user)
+    posts = Post.objects.filter(my_filter_qs)
+    posts = post_paginator(request, profile)
+    return render(request, 'network/follow.html', {
+        'posts': posts})
 
 def user_api(request):
     user = User.objects.get(id=request.user.id)
