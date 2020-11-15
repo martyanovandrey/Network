@@ -38,13 +38,13 @@
   
 </div>
 
-{% endblock %}
-
     {% for post in posts %}
-    <div class="card-body post">
+    <div id='{{post.id}}' class="card-body post">
         <h5><a href="/profile/{{post.user}}">{{post.user}}</a></h5> 
-        <a>Edit</a>
-        <span>{{post.text}}</span>
+        <a href=# class='edit'>Edit</a>
+        <span id='edit_text' style="display: block">{{post.text}}</span>
+        <textarea id='new_text' style="display: none"></textarea>
+        <input id ='save_btn' type='submit' style="display: none" class="btn btn-primary"></input>
         <span style='color:#b2b2b2'>{{post.timestamp}}</span>
         <span>❤️ {{post.likes}}</span>
         <a style='color:#c6c6c6'>Comment</a>
@@ -78,7 +78,7 @@
   </ul>
 {% endif %}
 
-
+{% endblock %}
 
 {% block script %}
     <script src="{% static 'network/index.js' %}"></script>
