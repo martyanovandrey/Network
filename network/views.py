@@ -80,7 +80,7 @@ def post_paginator(request, username):
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp")
     page = request.GET.get('page', 1)
-    paginator = Paginator(posts, 2)
+    paginator = Paginator(posts, 10)
     try:
         posts = paginator.page(page)
     except PageNotAnInteger:
@@ -145,16 +145,29 @@ def profile(request, profile):
         })
 
 def follow(request):
-    follow_list = UserFollowing.objects.filter(user_id=user)
-    test = list()
-    for follow in follow_list:
-        test.append(follow.following_user_id)
+    user = User.objects.get(id=request.user.id)
+    follow = User.objects.get(username=user)
+    following = follow.following.count()
+    follow_query = UserFollowing.objects.filter(user_id=user)
+    follow_list = list()
+    for follow in follow_query:
+        follow_list.append(follow.following_user_id)
     my_filter_qs = Q()
-    for user in test:
+    for user in follow_list:
         my_filter_qs = my_filter_qs | Q(user=user)
     posts = Post.objects.filter(my_filter_qs)
     posts = post_paginator(request, profile)
+
+    #List of following users for follow_view
+    follow_users = []
+    for users in follow_query:
+        follow_users.append(users.following_user_id.username)
+    print(tuple(follow_users))
+
     return render(request, 'network/follow.html', {
+        'name': user,
+        'following': following,
+        'follow_users': tuple(follow_users),
         'posts': posts})
 
 def user_api(request):
