@@ -123,13 +123,15 @@ def profile(request, profile):
     user = User.objects.get(id=request.user.id)
     follow = User.objects.get(username=profile)
     
-    try:
-        is_followed = False
+    if UserFollowing.objects.filter(user_id=user, following_user_id=follow).exists():
+        is_followed = True
         if request.method == "POST":
             UserFollowing.objects.get(user_id=user, following_user_id=follow).delete()
-    except:
-        UserFollowing.objects.create(user_id=user, following_user_id=follow)
-        is_followed = True
+    else:
+        is_followed = False
+        if request.method == "POST":
+            UserFollowing.objects.create(user_id=user, following_user_id=follow)  
+
     
     following = follow.following.count()
     followers = follow.followers.count()
@@ -150,13 +152,24 @@ def follow(request):
     following = follow.following.count()
     follow_query = UserFollowing.objects.filter(user_id=user)
     follow_list = list()
+    print(follow_query)
     for follow in follow_query:
         follow_list.append(follow.following_user_id)
+    print(follow_list)
     my_filter_qs = Q()
     for user in follow_list:
         my_filter_qs = my_filter_qs | Q(user=user)
+    print(follow_list)
     posts = Post.objects.filter(my_filter_qs)
-    posts = post_paginator(request, profile)
+    posts = posts.order_by("-timestamp")
+    page = request.GET.get('page', 1)
+    paginator = Paginator(posts, 10)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)    
 
     #List of following users for follow_view
     follow_users = []

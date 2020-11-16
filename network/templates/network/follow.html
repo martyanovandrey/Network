@@ -5,35 +5,34 @@
 {% block body %}
 {{ request.user.username|json_script:"username" }}
 <div class='card-body'>
-    <h2> {{ name }} follow {{ following }}
-    {{follow_users}}
-    users:</h2>
+    <h2>{{ request.user.username }} follow:</h2>
     
+	<div class="dropdown show">
+	<a class="btn btn-ligh dropdown-toggle btn-lg" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		 {{ following }} users:
+	</a>
+		<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+			{% for follow in follow_users %}
+				<a class="dropdown-item" href="{% url 'profile' profile=follow %}">{{follow}}</a>
+			{% endfor %}
+		</div>
+	</div>
 </div>
 
-    <div id="followers-view">
-    
-    </div>
-    <div>
-        <h5>All {{ name }} Posts</h5>
-    </div>
-
-    <div id="posts-view">
-  
 </div>
 
-    {% for post in posts %}
-    <div id='{{post.id}}' class="card-body post">
-        <h5><a href="/profile/{{post.user}}">{{post.user}}</a></h5> 
-        <a href=# class='edit'>Edit</a>
-        <span id='edit_text' style="display: block">{{post.text}}</span>
-        <textarea id='new_text' style="display: none"></textarea>
-        <input id ='save_btn' type='submit' style="display: none" class="btn btn-primary"></input>
-        <span style='color:#b2b2b2'>{{post.timestamp}}</span>
-        <span>❤️ {{post.likes}}</span>
-        <a style='color:#c6c6c6'>Comment</a>
-    </div>
-    {% endfor %}
+{% for post in posts %}
+<div id='{{post.id}}' class="card-body post">
+	<h5><a href="/profile/{{post.user}}">{{post.user}}</a></h5> 
+	<a href=# class='edit'>Edit</a>
+	<span id='edit_text' style="display: block">{{post.text}}</span>
+	<textarea id='new_text' style="display: none"></textarea>
+	<input id ='save_btn' type='submit' style="display: none" class="btn btn-primary"></input>
+	<span style='color:#b2b2b2'>{{post.timestamp}}</span>
+	<span>❤️ {{post.likes}}</span>
+	<a style='color:#c6c6c6'>Comment</a>
+</div>
+{% endfor %}
 
 {% if posts.has_other_pages %}
   <ul class="pagination">
@@ -67,3 +66,4 @@
 {% block script %}
     <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}
+
