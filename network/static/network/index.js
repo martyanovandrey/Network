@@ -79,13 +79,9 @@ function follow() {
 }
 
 function edit(id) {
-	console.log(id)
 	var post_id = document.getElementById(id)
-	console.log(post_id)
 	var post = post_id.querySelector("#edit_text");
-	console.log(post)
 	edit_post = post_id.querySelector('#new_text');
-	console.log(edit_post)
 	edit_post.style.display = 'block';
 	post.style.display = 'none';
 	edit_post.innerHTML = post.innerHTML
@@ -116,5 +112,32 @@ function edit(id) {
 		save_button.style.display = 'none';
 		post.innerHTML = edit_post.value
 		post.style.display = 'block';
+	}
+};
+
+function like(id) {
+	var post_id = document.getElementById(id)
+	var post = post_id.querySelector("#edit_text");
+
+	save_button.onclick = function () {
+		fetch('/like', {
+				credentials: 'include',
+				method: 'PUT',
+				mode: 'same-origin',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'X-CSRFToken': getCookie('csrftoken')
+				},
+				body: JSON.stringify({
+					id: edit_post.parentNode.id,
+					post: edit_post.value,
+					username: JSON.parse(document.getElementById('username').textContent)
+				})
+			})
+			.then(response => response.json())
+			.then(result => {
+
+			});
 	}
 };

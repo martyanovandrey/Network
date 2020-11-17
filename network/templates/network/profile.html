@@ -13,12 +13,12 @@
             {% if is_followed %}
                 <form action="{% url 'profile' name %}" method="post">
                     {% csrf_token %}
-                    <button class="btn btn-primary"> Follow </button>
+                    <button class="btn btn-light"> Unfollow </button>
                 </form>
             {% else %}
                 <form action="{% url 'profile' name %}" method="post">
                     {% csrf_token %}
-                    <button class="btn btn-light"> Unfollow </button>
+                    <button class="btn btn-primary"> Follow </button>
                 </form>
             {% endif %}
         {% endif %}

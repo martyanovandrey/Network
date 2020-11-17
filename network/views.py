@@ -122,20 +122,20 @@ def create_post(request):
 def profile(request, profile):
     user = User.objects.get(id=request.user.id)
     follow = User.objects.get(username=profile)
-    
+
+    is_followed = False
     if UserFollowing.objects.filter(user_id=user, following_user_id=follow).exists():
         is_followed = True
         if request.method == "POST":
             UserFollowing.objects.get(user_id=user, following_user_id=follow).delete()
+            is_followed = False
     else:
-        is_followed = False
         if request.method == "POST":
-            UserFollowing.objects.create(user_id=user, following_user_id=follow)  
-
+            UserFollowing.objects.create(user_id=user, following_user_id=follow)
+            is_followed = True  
     
     following = follow.following.count()
     followers = follow.followers.count()
-
 
     posts = post_paginator(request, profile)
     return render(request, 'network/profile.html', {
@@ -183,7 +183,7 @@ def follow(request):
         'follow_users': tuple(follow_users),
         'posts': posts})
 
-def user_api(request):
+def like(request):
     user = User.objects.get(id=request.user.id)
     user_following = UserFollowing.objects.filter(user_id=user)
     return JsonResponse([user_follow.serialize() for user_follow in user_following], safe=False)

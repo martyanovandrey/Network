@@ -17,6 +17,6 @@ urlpatterns = [
     path("create_post", views.create_post, name="create_post"),
     path("posts/<str:postbox>", views.posts, name="posts"),
     path("follow", views.follow, name="follow"),
-    path("user_api", views.user_api, name="user_api")
+    path("like", views.like, name="like")
     
 ]
