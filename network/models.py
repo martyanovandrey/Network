@@ -15,7 +15,6 @@ class User(AbstractUser):
 class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user")
     text = models.CharField(max_length=255)
-    likes = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -26,7 +25,6 @@ class Post(models.Model):
             "id": self.id,
             "user": self.user.username,
             'text': self.text,
-            'likes': self.likes,
             'timestamp': self.timestamp.strftime("%b %#d %Y, %#I:%M %p")
         }
 
@@ -42,5 +40,16 @@ class UserFollowing(models.Model):
 
     class Meta:
         unique_together = ['user_id', 'following_user_id']
+
+class like(models.Model):
+    post_like = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="post_like")
+    user_like = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_like")
+
+    def serialize(self):
+        return {
+            'post_like': self.post_like.id,
+            "user_like": self.user_like.username
+        }
+
 
         

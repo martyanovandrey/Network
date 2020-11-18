@@ -152,14 +152,11 @@ def follow(request):
     following = follow.following.count()
     follow_query = UserFollowing.objects.filter(user_id=user)
     follow_list = list()
-    print(follow_query)
     for follow in follow_query:
         follow_list.append(follow.following_user_id)
-    print(follow_list)
     my_filter_qs = Q()
     for user in follow_list:
         my_filter_qs = my_filter_qs | Q(user=user)
-    print(follow_list)
     posts = Post.objects.filter(my_filter_qs)
     posts = posts.order_by("-timestamp")
     page = request.GET.get('page', 1)
@@ -185,6 +182,11 @@ def follow(request):
 
 def like(request):
     user = User.objects.get(id=request.user.id)
-    user_following = UserFollowing.objects.filter(user_id=user)
+    like_user = User.objects.get(username=user)
+    following = follow.following.count()
+    post = User.objects.get(id=id)
+    Post.objects.create(id=request.id, following_user_id=follow)
+    print('im HERE')
+    #if UserFollowing.objects.filter(user_id=user, following_user_id=follow).exists():
     return JsonResponse([user_follow.serialize() for user_follow in user_following], safe=False)
 

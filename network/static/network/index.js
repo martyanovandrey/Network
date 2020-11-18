@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', function () {
 		e.addEventListener("click", function () {
 			edit(e.parentNode.id)
 		}))
+	document.querySelectorAll(".like").forEach(e =>
+		e.addEventListener("click", function () {
+			like(e.parentNode.id)
+		}))
 });
 
 function load_post(postbox) {
@@ -117,9 +121,10 @@ function edit(id) {
 
 function like(id) {
 	var post_id = document.getElementById(id)
-	var post = post_id.querySelector("#edit_text");
+	var like = post_id.querySelector("#like");
 
-	save_button.onclick = function () {
+
+	like.onclick = function () {
 		fetch('/like', {
 				credentials: 'include',
 				method: 'PUT',
@@ -130,14 +135,12 @@ function like(id) {
 					'X-CSRFToken': getCookie('csrftoken')
 				},
 				body: JSON.stringify({
-					id: edit_post.parentNode.id,
-					post: edit_post.value,
-					username: JSON.parse(document.getElementById('username').textContent)
+					id: like.parentNode.id
 				})
 			})
 			.then(response => response.json())
 			.then(result => {
-
+				console.log('efef')
 			});
 	}
 };
