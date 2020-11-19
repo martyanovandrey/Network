@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger  
 from django.db.models import Q
 
-from .models import User, Post, UserFollowing
+from .models import User, Post, UserFollowing, Like
 
 from django.views.generic import ListView
 
@@ -97,21 +97,16 @@ def posts(request, postbox):
 
 
 def create_post(request):
+    data = json.loads(request.body)
+    new_post = data["post"]
+    user = data["username"]
+    id = data["id"]
+    user = User.objects.get(username=user)
     if request.method == "POST":
-        data = json.loads(request.body)
-        new_post = data["post"]
-        user = data["username"]
-        user = User.objects.get(username=user)
         post = Post(user = user, text = new_post)
         post.save()
         return HttpResponse(status=204)
     elif request.method == "PUT":
-        data = json.loads(request.body)
-        print(data)
-        new_post = data["post"]
-        user = data["username"]
-        id = data["id"]
-        user = User.objects.get(username=user)
         post = Post.objects.filter(id = id).update(text = new_post)
         return HttpResponse(status=204)
     else:
@@ -146,6 +141,7 @@ def profile(request, profile):
         'posts': posts        
         })
 
+@login_required(login_url='login')
 def follow(request):
     user = User.objects.get(id=request.user.id)
     follow = User.objects.get(username=user)
@@ -180,13 +176,19 @@ def follow(request):
         'follow_users': tuple(follow_users),
         'posts': posts})
 
+@login_required(login_url='login')
 def like(request):
+    data = json.loads(request.body)
     user = User.objects.get(id=request.user.id)
     like_user = User.objects.get(username=user)
-    following = follow.following.count()
-    post = User.objects.get(id=id)
-    Post.objects.create(id=request.id, following_user_id=follow)
-    print('im HERE')
+    id = data["id"]
+    post = Post.objects.get(id=id)
+    like = Like(post_like=post, user_like=user)
+    like.save()
+    like_count = Like.objects.filter(post_like=post).count()
+
+    '''
+    '''
     #if UserFollowing.objects.filter(user_id=user, following_user_id=follow).exists():
-    return JsonResponse([user_follow.serialize() for user_follow in user_following], safe=False)
+    return JsonResponse(like_count, safe=False)
 

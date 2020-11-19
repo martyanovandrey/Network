@@ -41,7 +41,7 @@ class UserFollowing(models.Model):
     class Meta:
         unique_together = ['user_id', 'following_user_id']
 
-class like(models.Model):
+class Like(models.Model):
     post_like = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="post_like")
     user_like = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_like")
 

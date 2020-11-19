@@ -127,7 +127,7 @@ function like(id) {
 	like.onclick = function () {
 		fetch('/like', {
 				credentials: 'include',
-				method: 'PUT',
+				method: 'POST',
 				mode: 'same-origin',
 				headers: {
 					'Accept': 'application/json',
@@ -140,7 +140,7 @@ function like(id) {
 			})
 			.then(response => response.json())
 			.then(result => {
-				console.log('efef')
+
 			});
 	}
 };
