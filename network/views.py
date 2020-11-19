@@ -74,8 +74,6 @@ def post_paginator(request, username):
     if User.objects.filter(username=username).exists():
         user = User.objects.get(username=username)
         posts = Post.objects.filter(user=user)
-    #elif isinstance(username, list):
-
     else:
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp")
@@ -133,6 +131,11 @@ def profile(request, profile):
     followers = follow.followers.count()
 
     posts = post_paginator(request, profile)
+
+    #Likes
+    curent_post = Post.objects.get()
+    like_count = Like.objects.filter(post_like=post).count()
+
     return render(request, 'network/profile.html', {
         'name': profile,
         'following': following,
@@ -170,6 +173,8 @@ def follow(request):
         follow_users.append(users.following_user_id.username)
     print(tuple(follow_users))
 
+
+
     return render(request, 'network/follow.html', {
         'name': user,
         'following': following,
@@ -178,6 +183,8 @@ def follow(request):
 
 @login_required(login_url='login')
 def like(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
     data = json.loads(request.body)
     user = User.objects.get(id=request.user.id)
     like_user = User.objects.get(username=user)
@@ -186,9 +193,9 @@ def like(request):
     like = Like(post_like=post, user_like=user)
     like.save()
     like_count = Like.objects.filter(post_like=post).count()
-
+    print(like_count)
     '''
     '''
     #if UserFollowing.objects.filter(user_id=user, following_user_id=follow).exists():
-    return JsonResponse(like_count, safe=False)
+    return JsonResponse({"message": "Liked successfully."}, status=201)
 
