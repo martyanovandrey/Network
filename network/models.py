@@ -15,11 +15,11 @@ class User(AbstractUser):
 class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user")
     text = models.CharField(max_length=255)
-    likes = models.ManyToManyField('User', default=None, blank=True, related_name='likes')
+    likes = models.ManyToManyField('User', blank=True, related_name='likes')
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user} {self.timestamp}"  
+        return f"{self.user} {self.likes}"  
 
     @property
     def num_like(self):
@@ -30,6 +30,7 @@ class Post(models.Model):
             "id": self.id,
             "user": self.user.username,
             'text': self.text,
+            "likes": self.likes.all().count(),
             'timestamp': self.timestamp.strftime("%b %#d %Y, %#I:%M %p")
         }
 

@@ -78,6 +78,7 @@ def post_paginator(request, username):
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp")
     page = request.GET.get('page', 1)
+    print(posts)
     paginator = Paginator(posts, 10)
     try:
         posts = paginator.page(page)
@@ -133,8 +134,8 @@ def profile(request, profile):
     posts = post_paginator(request, profile)
 
     #Likes
-    curent_post = Post.objects.get()
-    like_count = Like.objects.filter(post_like=post).count()
+    #curent_post = Post.objects.get()
+    #like_count = Like.objects.filter(post_like=post).count()
 
     return render(request, 'network/profile.html', {
         'name': profile,
