@@ -194,7 +194,8 @@ def like(request):
     like = Like(post_like=post, user_like=user)
     like.save()
     like_count = Like.objects.filter(post_like=post).count()
-    print(like_count)
+    print(' '*104)
+    print(post.likes)
     '''
     '''
     #if UserFollowing.objects.filter(user_id=user, following_user_id=follow).exists():
