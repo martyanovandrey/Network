@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger  
 from django.db.models import Q
 
-from .models import User, Post, UserFollowing, Like
+from .models import User, Post, UserFollowing
 
 from django.views.generic import ListView
 
@@ -78,7 +78,6 @@ def post_paginator(request, username):
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp")
     page = request.GET.get('page', 1)
-    print(posts)
     paginator = Paginator(posts, 10)
     try:
         posts = paginator.page(page)
@@ -134,7 +133,7 @@ def profile(request, profile):
     posts = post_paginator(request, profile)
 
     #Likes
-    #curent_post = Post.objects.get()
+    #post = Post.objects.get(id=id)
     #like_count = Like.objects.filter(post_like=post).count()
 
     return render(request, 'network/profile.html', {
@@ -191,13 +190,13 @@ def like(request):
     like_user = User.objects.get(username=user)
     id = data["id"]
     post = Post.objects.get(id=id)
-    like = Like(post_like=post, user_like=user)
-    like.save()
-    like_count = Like.objects.filter(post_like=post).count()
+    like = post.likes.add(like_user)
+    like_count = Post.objects.filter(likes=like_user).count()
     print(' '*104)
-    print(post.likes)
+    print(like_count)
     '''
     '''
-    #if UserFollowing.objects.filter(user_id=user, following_user_id=follow).exists():
+    #if Post.objects.filter(likes=like_user).exists():
+
     return JsonResponse({"message": "Liked successfully."}, status=201)
 
