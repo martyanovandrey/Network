@@ -121,7 +121,7 @@ function edit(id) {
 
 function like(id) {
 	var post_id = document.getElementById(id)
-	var like = post_id.querySelector("#like");
+	var like = post_id.querySelector(".like");
 
 
 	like.onclick = function () {
@@ -140,7 +140,7 @@ function like(id) {
 			})
 			.then(response => response.json())
 			.then(result => {
-
+				
 			});
 	}
 };

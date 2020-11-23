@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger  
 from django.db.models import Q
 
-from .models import User, Post, UserFollowing, Like
+from .models import User, Post, UserFollowing
 
 from django.views.generic import ListView
 
@@ -74,8 +74,6 @@ def post_paginator(request, username):
     if User.objects.filter(username=username).exists():
         user = User.objects.get(username=username)
         posts = Post.objects.filter(user=user)
-    #elif isinstance(username, list):
-
     else:
         posts = Post.objects.all()
     posts = posts.order_by("-timestamp")
@@ -133,6 +131,11 @@ def profile(request, profile):
     followers = follow.followers.count()
 
     posts = post_paginator(request, profile)
+
+    #Likes
+    #post = Post.objects.get(id=id)
+    #like_count = Like.objects.filter(post_like=post).count()
+
     return render(request, 'network/profile.html', {
         'name': profile,
         'following': following,
@@ -170,6 +173,8 @@ def follow(request):
         follow_users.append(users.following_user_id.username)
     print(tuple(follow_users))
 
+
+
     return render(request, 'network/follow.html', {
         'name': user,
         'following': following,
@@ -178,17 +183,20 @@ def follow(request):
 
 @login_required(login_url='login')
 def like(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
     data = json.loads(request.body)
     user = User.objects.get(id=request.user.id)
     like_user = User.objects.get(username=user)
     id = data["id"]
     post = Post.objects.get(id=id)
-    like = Like(post_like=post, user_like=user)
-    like.save()
-    like_count = Like.objects.filter(post_like=post).count()
+    like = post.likes.add(like_user)
+    like_count = Post.objects.filter(likes=like_user).count()
+    print(' '*104)
+    print(like_count)
+    '''
+    '''
+    #if Post.objects.filter(likes=like_user).exists():
 
-    '''
-    '''
-    #if UserFollowing.objects.filter(user_id=user, following_user_id=follow).exists():
-    return JsonResponse(like_count, safe=False)
+    return JsonResponse({"message": "Liked successfully."}, status=201)
 
