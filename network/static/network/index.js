@@ -139,8 +139,9 @@ function like(id) {
 				})
 			})
 			.then(response => response.json())
-			.then(result => {
-				
+			.then(response => {
+				console.log(response)
 			});
+		
 	}
 };

@@ -190,13 +190,20 @@ def like(request):
     like_user = User.objects.get(username=user)
     id = data["id"]
     post = Post.objects.get(id=id)
-    like = post.likes.add(like_user)
+    liked = False
+    '''
+    '''
+    if post.likes.filter(username=user).exists():
+        like = post.likes.remove(like_user)
+        liked = False
+    else:
+        like = post.likes.add(like_user)
+        liked = True
+
     like_count = Post.objects.filter(likes=like_user).count()
+    response = {'like_count':like_count, 'liked':liked}
     print(' '*104)
     print(like_count)
-    '''
-    '''
-    #if Post.objects.filter(likes=like_user).exists():
 
-    return JsonResponse({"message": "Liked successfully."}, status=201)
+    return JsonResponse(response)
 
