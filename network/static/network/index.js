@@ -140,8 +140,12 @@ function like(id) {
 			})
 			.then(response => response.json())
 			.then(response => {
-				console.log(response)
+				if (response.liked) {
+					like.innerHTML = `❤️ ${response.like_count}`
+				} else {
+					like.innerHTML = `🤍 ${response.like_count}`
+				}
 			});
-		
-	}
+			
+		}
 };

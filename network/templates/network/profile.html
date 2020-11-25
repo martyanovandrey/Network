@@ -46,7 +46,13 @@
         <textarea id='new_text' style="display: none"></textarea>
         <input id ='save_btn' type='submit' style="display: none" class="btn btn-primary"></input>
         <span style='color:#b2b2b2'>{{post.timestamp}}</span>
-        <span class='like'>🤍 {{post.likes.all.count}}</span>
+		{{ request.user.username }}
+		{{ post.likes.all }}
+        {% if request.user.username in post.likes.all %}
+        	<span class='like'>❤️ {{post.likes.all.count}}</span>
+		{% else %}
+			<span class='like'>🤍 {{post.likes.all.count}}</span>
+		{% endif %}
         <a style='color:#c6c6c6'>Comment</a>
     </div>
     {% endfor %}

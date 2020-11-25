@@ -189,18 +189,18 @@ def like(request):
     user = User.objects.get(id=request.user.id)
     like_user = User.objects.get(username=user)
     id = data["id"]
-    post = Post.objects.get(id=id)
+    current_post = Post.objects.get(id=id)
     liked = False
     '''
     '''
-    if post.likes.filter(username=user).exists():
-        like = post.likes.remove(like_user)
+    if current_post.likes.filter(username=user).exists():
+        like = current_post.likes.remove(like_user)
         liked = False
     else:
-        like = post.likes.add(like_user)
+        like = current_post.likes.add(like_user)
         liked = True
 
-    like_count = Post.objects.filter(likes=like_user).count()
+    like_count = current_post.likes.count()
     response = {'like_count':like_count, 'liked':liked}
     print(' '*104)
     print(like_count)
