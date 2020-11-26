@@ -123,29 +123,30 @@ function like(id) {
 	var post_id = document.getElementById(id)
 	var like = post_id.querySelector(".like");
 
-
-	like.onclick = function () {
-		fetch('/like', {
-				credentials: 'include',
-				method: 'POST',
-				mode: 'same-origin',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-					'X-CSRFToken': getCookie('csrftoken')
-				},
-				body: JSON.stringify({
-					id: like.parentNode.id
-				})
+	console.log('click')
+	fetch('/like', {
+			credentials: 'include',
+			method: 'POST',
+			mode: 'same-origin',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'X-CSRFToken': getCookie('csrftoken')
+			},
+			body: JSON.stringify({
+				id: like.parentNode.id
 			})
-			.then(response => response.json())
-			.then(response => {
-				if (response.liked) {
-					like.innerHTML = `❤️ ${response.like_count}`
-				} else {
-					like.innerHTML = `🤍 ${response.like_count}`
-				}
-			});
+		})
+		.then(response => response.json())
+		.then(response => {
+			console.log('got response')
+			if (response.liked) {
+				like.innerHTML = `❤️ ${response.like_count}`
+			} else {
+				like.innerHTML = `🤍 ${response.like_count}`
+			}
+		});
 			
-		}
+
+	console.log('onclick end')
 };
