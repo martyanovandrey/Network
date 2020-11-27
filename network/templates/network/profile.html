@@ -48,9 +48,9 @@
         <span style='color:#b2b2b2'>{{post.timestamp}}</span>
         {% if request.user in post.likes.all %}
         	<div class='like'>❤️ {{post.likes.all.count}}</div>
-		{% else %}
-			<div class='like'>🤍 {{post.likes.all.count}}</div>
-		{% endif %}
+        {% else %}
+          <div class='like'>🤍 {{post.likes.all.count}}</div>
+        {% endif %}
         <a style='color:#c6c6c6'>Comment</a>
     </div>
     {% endfor %}
