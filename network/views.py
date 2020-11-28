@@ -14,8 +14,8 @@ from .models import User, Post, UserFollowing
 from django.views.generic import ListView
 
 def index(request):
-
-    return render(request, "network/index.html")
+    posts = post_paginator(request, all)
+    return render(request, 'network/index.html', { 'posts': posts })
 
 
 def login_view(request):
