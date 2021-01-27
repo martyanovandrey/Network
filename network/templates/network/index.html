@@ -23,7 +23,9 @@
     {% for post in posts %}
     <div id='{{post.id}}' class="card-body post">
         <h5><a href="/profile/{{post.user}}">{{post.user}}</a></h5> 
-        <a href=# class='edit'>Edit</a>
+        {% if post.user|stringformat:"s" == user.username|stringformat:"s" %}
+          <a href=# class='edit'>Edit</a>
+        {% endif %}
         <span id='edit_text' style="display: block">{{post.text}}</span>
         <textarea id='new_text' style="display: none"></textarea>
         <input id ='save_btn' type='submit' style="display: none" class="btn btn-primary"></input>

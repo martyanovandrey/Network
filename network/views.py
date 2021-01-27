@@ -98,13 +98,13 @@ def create_post(request):
     data = json.loads(request.body)
     new_post = data["post"]
     user = data["username"]
-    id = data["id"]
     user = User.objects.get(username=user)
     if request.method == "POST":
         post = Post(user = user, text = new_post)
         post.save()
         return HttpResponse(status=204)
     elif request.method == "PUT":
+        id = data["id"]
         post = Post.objects.filter(id = id).update(text = new_post)
         return HttpResponse(status=204)
     else:
