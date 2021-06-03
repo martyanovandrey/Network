@@ -1,5 +1,5 @@
 [![video](https://user-images.githubusercontent.com/37772440/120626211-1ce13c80-c46b-11eb-930b-7d2507ac41d4.png)](http://www.youtube.com/watch?v=yWvHa_mjhYg)
-
+  ___
 
 
 # Network
@@ -28,7 +28,4 @@ Using Python, JavaScript, HTML, and CSS, complete the implementation of a social
     - For security, ensure that your application is designed such that it is not possible for a user, via any route, to edit another user’s posts.
 - **“Like” and “Unlike”:** Users should be able to click a button or link on any post to toggle whether or not they “like” that post.
     - Using JavaScript, you should asynchronously let the server know to update the like count (as via a call to fetch) and then update the post’s like count displayed on the page, without requiring a reload of the entire page.
-  
-  ___
-  [Live demo](https://youtu.be/yWvHa_mjhYg)
-  
+
